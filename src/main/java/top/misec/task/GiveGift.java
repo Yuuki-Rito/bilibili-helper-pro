@@ -1,6 +1,7 @@
 package top.misec.task;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import lombok.extern.log4j.Log4j2;
 import top.misec.config.Config;
@@ -138,9 +139,9 @@ public class GiveGift implements Task {
      * @Time 2020-10-13
      */
     public JsonArray xliveGiftBagList() {
-        return HttpUtil.doGet("https://api.live.bilibili.com/xlive/web-room/v1/gift/bag_list")
-                .get("data").getAsJsonObject()
-                .get("list").getAsJsonArray();
+        JsonObject data = HttpUtil.doGet("https://api.live.bilibili.com/xlive/web-room/v1/gift/bag_list")
+                .get("data").getAsJsonObject();
+        return JsonNull.INSTANCE == data.get("list") ? new JsonArray() : data.get("list").getAsJsonArray();
     }
 
     /**
