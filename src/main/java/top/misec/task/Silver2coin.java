@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import lombok.extern.log4j.Log4j2;
 import top.misec.apiquery.ApiList;
 import top.misec.apiquery.OftenAPI;
+import top.misec.login.Verify;
 import top.misec.utils.HttpUtil;
 
 import static top.misec.task.TaskInfoHolder.STATUS_CODE_STR;
@@ -28,9 +29,10 @@ public class Silver2coin implements Task {
 
         if (silverNum < exchangeRate) {
             log.info("当前银瓜子余额为:{},不足700,不进行兑换", silverNum);
-            return;
         } else {
-            JsonObject resultJson = HttpUtil.doGet(ApiList.silver2coin);
+
+            String requestBody = "csrf=" + Verify.getInstance().getBiliJct();
+            JsonObject resultJson = HttpUtil.doPost(ApiList.silver2coin, requestBody);
             if (resultJson == null) {
                 log.info("银瓜子兑换硬币失败 原因是:{}", "银瓜子兑换硬币API失效");
                 return;
@@ -49,7 +51,7 @@ public class Silver2coin implements Task {
                     userInfo.setMoney(coinMoneyAfterSilver2Coin);
                 }
             } else {
-                log.info("银瓜子兑换硬币失败 原因是:{}", resultJson.get("msg").getAsString());
+                log.info("银瓜子兑换硬币失败 原因是:{}", resultJson.get("message").getAsString());
             }
         }
 
