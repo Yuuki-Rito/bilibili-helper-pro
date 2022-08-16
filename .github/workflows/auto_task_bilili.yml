@@ -4,13 +4,13 @@
 name: auto_task_for_bilibili
 
 on:
-  push:
-    branches: main
+#  push:
+#    branches: main
   workflow_dispatch:
   schedule:
     - cron: '10 13 * * *'
     # cron表达式，Actions时区是UTC时间，所以上午9点要往前推8个小时
-
+    - cron: '0 2 1 * *'
 
 jobs:
   start:
@@ -40,5 +40,15 @@ jobs:
           TELEGRAMCHATID: ${{ secrets.TELEGRAMCHATID }}
           TZ: Asia/Shanghai
           # 时区配置为Asia/Shanghai
+        if: github.event.schedule != '0 2 1 * *'
         run:
           mvn compile exec:java -Dexec.mainClass="top.misec.BiliMain" -Dexec.args="${DEDEUSERID} ${SESSDATA} ${BILI_JCT} ${SERVERPUSHKEY} ${TELEGRAMBOTTOKEN} ${TELEGRAMCHATID}"
+      - name:  Auto green
+        if: github.event.schedule != '10 13 * * *'
+        run: |
+          git config --local user.email "zhm35422@163.com"
+          git config --local user.name "Yuuki Rito"
+          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git pull --rebase
+          git commit --allow-empty -m "a commit a day keeps your girlfriend away"
+          git push
