@@ -4,12 +4,12 @@
 name: auto_green_task
 
 on:
-  #  push:
-  #    branches: main
-  workflow_dispatch:
-  schedule:
-    # cron表达式，Actions时区是UTC时间，所以上午9点要往前推8个小时
-    - cron: '0 2 1 * *'
+    push:
+      branches: main
+#  workflow_dispatch:
+#  schedule:
+#    # cron表达式，Actions时区是UTC时间，所以上午9点要往前推8个小时
+#    - cron: '0 2 1 * *'
 
 jobs:
   start:
